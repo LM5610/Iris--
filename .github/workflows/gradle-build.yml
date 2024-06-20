@@ -41,14 +41,8 @@ jobs:
     - name: 验证 JAVA_HOME
       run: echo $JAVA_HOME
 
-    #- name: 设置项目
-      #run: ./gradlew setup --parallel --max-workers=3 --info --stacktrace
-
     - name: 构建 nms 项目
       run: ./gradlew :nms:v1_19_R3:build --info --stacktrace
-
-    #- name: 构建项目
-      #run: ./gradlew build --parallel --max-workers=3 --info --stacktrace
 
     - name: 运行 iris 任务
       run: ./gradlew iris --parallel --max-workers=3 --info --stacktrace
@@ -62,8 +56,23 @@ jobs:
     - name: 列出构建输出
       run: ls -R build/libs || echo "构建输出目录不存在"
 
-    - name: 上传构建工件
-      uses: actions/upload-artifact@v4
+    - name: 创建 GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: iris-jar
-        path: build/libs/Iris-*.jar
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: 上传构建工件到 Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/libs/Iris-*.jar
+        asset_name: Iris-${{ github.ref }}.jar
+        asset_content_type: application/java-archive
