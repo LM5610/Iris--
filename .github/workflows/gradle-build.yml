@@ -41,8 +41,14 @@ jobs:
     - name: 验证 JAVA_HOME
       run: echo $JAVA_HOME
 
+    #- name: 设置项目
+      #run: ./gradlew setup --parallel --max-workers=3 --info --stacktrace
+
     - name: 构建 nms 项目
       run: ./gradlew :nms:v1_19_R3:build --info --stacktrace
+
+    #- name: 构建项目
+      #run: ./gradlew build --parallel --max-workers=3 --info --stacktrace
 
     - name: 运行 iris 任务
       run: ./gradlew iris --parallel --max-workers=3 --info --stacktrace
@@ -54,10 +60,10 @@ jobs:
       run: ls -R Iris || echo "Iris 目录不存在"
 
     - name: 列出构建输出
-      run: ls -R Iris/build || echo "Iris/build 目录不存在"
+      run: ls -R build/libs || echo "构建输出目录不存在"
 
     - name: 上传构建工件
       uses: actions/upload-artifact@v4
       with:
         name: iris-jar
-        path: Iris/build/libs/Iris-*.jar
+        path: build/libs/Iris-*.jar
