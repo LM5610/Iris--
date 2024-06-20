@@ -58,3 +58,9 @@ jobs:
 
     - name: 列出构建输出
       run: ls -R Iris/build || echo "Iris/build 目录不存在"
+
+    - name: 上传构建工件
+      uses: actions/upload-artifact@v3
+      with:
+        name: iris-jar
+        path: Iris/build/libs/Iris-*.jar
