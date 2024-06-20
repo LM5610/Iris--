@@ -24,7 +24,7 @@ jobs:
           ~/.gradle/caches
           ~/.gradle/wrapper
           ~/.m2/repository
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}-${{ github.run_id }}
         restore-keys: |
           ${{ runner.os }}-gradle-
           ${{ runner.os }}-maven-
@@ -41,8 +41,11 @@ jobs:
     - name: 验证 JAVA_HOME
       run: echo $JAVA_HOME
 
-    #- name: 设置项目
-      #run: ./gradlew setup --parallel --max-workers=3
+    - name: 设置项目
+      run: ./gradlew setup --parallel --max-workers=3 --info --stacktrace
+
+    - name: 构建 nms 项目
+      run: ./gradlew :nms:v1_19_R3:build --info --stacktrace
 
     - name: 构建项目
       run: ./gradlew build --parallel --max-workers=3 --info --stacktrace
