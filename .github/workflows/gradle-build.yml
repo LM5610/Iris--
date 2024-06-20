@@ -41,6 +41,9 @@ jobs:
     - name: 验证 JAVA_HOME
       run: echo $JAVA_HOME
 
+    - name: 构建 nms 项目
+      run: ./gradlew :nms:v1_19_R3:build --info --stacktrace
+
     - name: 运行 iris 任务
       run: ./gradlew iris --parallel --max-workers=3 --info --stacktrace
 
